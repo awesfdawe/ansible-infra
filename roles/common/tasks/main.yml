@@ -1,0 +1,15 @@
+---
+- name: Setup firewalld
+  ansible.builtin.include_tasks: firewalld.yml
+
+- name: Setup crowdsec
+  ansible.builtin.include_tasks: crowdsec.yml
+
+- name: Setup autoupdate
+  ansible.builtin.include_tasks: autoupdate.yml
+
+- name: Install essential packages
+  ansible.builtin.include_tasks: essential_packages.yml
+
+- name: Setup micro
+  ansible.builtin.include_tasks: micro.yml

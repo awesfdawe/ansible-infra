@@ -1,0 +1,24 @@
+- name: Install micro
+  ansible.builtin.apt:
+    name: micro
+    update_cache: true
+  become: true
+
+- name: Create micro settings directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.config/micro"
+    state: directory
+    owner: "{{ ansible_facts['user_id'] }}"
+    group: "{{ ansible_facts['user_id'] }}"
+    mode: "0755"
+
+- name: Enable terminal clipboard
+  ansible.builtin.copy:
+    dest: "{{ ansible_facts['env']['HOME'] }}/.config/micro/settings.json"
+    owner: "{{ ansible_facts['user_id'] }}"
+    group: "{{ ansible_facts['user_id'] }}"
+    mode: "0644"
+    content: |
+      {
+          "clipboard": "terminal"
+      }

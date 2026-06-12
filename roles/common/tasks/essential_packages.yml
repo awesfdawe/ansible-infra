@@ -1,0 +1,19 @@
+---
+- name: Install essential packages
+  ansible.builtin.apt:
+    pkg:
+      - btop
+      - duf
+      - fzf
+      - bat
+      - lnav
+      - lsof
+      - rsync
+      - curl
+      - wget
+      - jq
+      - zip
+      - unzip
+      - p7zip-full
+    update_cache: true
+  become: true

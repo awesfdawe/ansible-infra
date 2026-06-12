@@ -1,0 +1,25 @@
+---
+- name: Add CrowdSec repository
+  ansible.builtin.deb822_repository:
+    name: crowdsec
+    types: deb
+    uris: https://packagecloud.io/crowdsec/crowdsec/any
+    suites: any
+    components: main
+    signed_by: https://packagecloud.io/crowdsec/crowdsec/gpgkey
+  become: true
+
+- name: Install CrowdSec
+  ansible.builtin.apt:
+    pkg:
+      - crowdsec
+      - crowdsec-firewall-bouncer-nftables
+    update_cache: true
+  become: true
+
+- name: Enable CrowdSec
+  ansible.builtin.systemd_service:
+    name: crowdsec
+    enabled: true
+    state: started
+  become: true

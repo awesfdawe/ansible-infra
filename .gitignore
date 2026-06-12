@@ -11,3 +11,6 @@ wheels/
 
 # Ansible
 .ansible/
+hosts.yml
+hosts.yaml
+hosts

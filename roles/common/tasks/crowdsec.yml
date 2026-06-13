@@ -11,15 +11,32 @@
 
 - name: Install CrowdSec
   ansible.builtin.apt:
-    pkg:
-      - crowdsec
-      - crowdsec-firewall-bouncer-nftables
+    name: crowdsec
     update_cache: true
   become: true
 
 - name: Enable CrowdSec
   ansible.builtin.systemd_service:
     name: crowdsec
+    enabled: true
+    state: started
+  become: true
+
+- name: Wait for CrowdSec to start listening to LAPI
+  ansible.builtin.wait_for:
+    port: 8080
+    delay: 2
+    timeout: 30
+
+- name: Install CrowdSec firewall bouncer
+  ansible.builtin.apt:
+    name: crowdsec-firewall-bouncer-nftables
+    update_cache: true
+  become: true
+
+- name: Enable CrowdSec firewall bouncer
+  ansible.builtin.systemd_service:
+    name: crowdsec-firewall-bouncer
     enabled: true
     state: started
   become: true

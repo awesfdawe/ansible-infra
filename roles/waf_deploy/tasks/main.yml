@@ -1,0 +1,5 @@
+- name: Certbot
+  ansible.builtin.include_tasks: certbot.yml
+
+- name: Nginx
+  ansible.builtin.include_tasks: nginx.yml

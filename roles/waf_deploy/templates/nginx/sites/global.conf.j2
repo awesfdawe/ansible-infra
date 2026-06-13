@@ -1,0 +1,19 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name *.{{ domain }} {{ domain }};
+
+    return 308 https://$host$request_uri;
+}
+
+server {
+    server_name *.{{ domain }};
+
+    include snippets/proxy.conf;
+
+    # temp, wg later
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+}

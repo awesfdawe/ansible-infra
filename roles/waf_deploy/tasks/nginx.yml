@@ -1,0 +1,67 @@
+---
+- name: Install nginx
+  ansible.builtin.apt:
+    pkg:
+      - nginx
+      - libnginx-mod-http-lua
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: Update Nginx Config
+  ansible.builtin.template:
+    src: nginx/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload Nginx
+  become: true
+
+- name: Update main Nginx snippet
+  ansible.builtin.template:
+    src: nginx/proxy-snippet.conf.j2
+    dest: /etc/nginx/snippets/proxy.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload Nginx
+  become: true
+
+- name: Deploy plug
+  ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Update sites Nginx
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "/etc/nginx/conf.d/{{ item | basename | regex_replace('\\.j2$', '') }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload Nginx
+  with_fileglob: "{{ role_path }}/templates/nginx/sites/*.conf.j2"
+  become: true
+
+- name: Enable nginx
+  ansible.builtin.systemd_service:
+    name: nginx
+    enabled: true
+    state: started
+  become: true
+
+- name: Allow http/https traffic
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: true
+  loop:
+    - http
+    - https
+  become: true

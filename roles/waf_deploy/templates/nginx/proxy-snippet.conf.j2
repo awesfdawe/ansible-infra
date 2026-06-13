@@ -1,0 +1,9 @@
+listen 443 ssl;
+listen [::]:443 ssl;
+
+http2 on;
+ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
+
+# HSTS
+add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;

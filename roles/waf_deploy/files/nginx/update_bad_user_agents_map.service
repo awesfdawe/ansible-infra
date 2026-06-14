@@ -1,0 +1,21 @@
+[Unit]
+Description=Update bad_user_agents.map nginx file
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c '\
+  URL="https://raw.githubusercontent.com/awesfdawe/nginx-misc/refs/heads/main/bad_user_agents.map"; \
+  TARGET="/etc/nginx/maps/bad_user_agents.map"; \
+  TEMP="/tmp/bad_user_agents.map"; \
+  curl -sSL --retry 3 --retry-delay 15 "$$URL" -o "$$TEMP" || exit 1; \
+  if [ ! -s "$$TEMP" ]; then rm -f "$$TEMP"; exit 1; fi; \
+  if [ ! -f "$$TARGET" ] || ! cmp -s "$$TARGET" "$$TEMP"; then \
+    mv "$$TEMP" "$$TARGET" && nginx -t && systemctl reload nginx; \
+  else \
+    rm -f "$$TEMP"; \
+  fi'
+
+[Install]
+WantedBy=multi-user.target

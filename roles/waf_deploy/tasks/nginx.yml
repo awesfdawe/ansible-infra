@@ -8,6 +8,56 @@
     cache_valid_time: 3600
   become: true
 
+- name: Create maps folder
+  ansible.builtin.file:
+    path: /etc/nginx/maps
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  become: true
+
+- name: Check if user agents map exist
+  ansible.builtin.stat:
+    path: /etc/nginx/maps/bad_user_agents.map
+  register: waf_deploy_bad_user_agents_file
+
+- name: Update user agents map
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/awesfdawe/nginx-misc/refs/heads/main/bad_user_agents.map
+    dest: /etc/nginx/maps/bad_user_agents.map
+    owner: root
+    group: root
+    mode: "0644"
+  when: not waf_deploy_bad_user_agents_file.stat.exists
+  become: true
+
+- name: Install service for user agents map update
+  ansible.builtin.copy:
+    src: nginx/update_bad_user_agents_map.service
+    dest: /etc/systemd/system/update_bad_user_agents_map.service
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Install timer for user agents map auto update
+  ansible.builtin.copy:
+    src: nginx/update_bad_user_agents_map.timer
+    dest: /etc/systemd/system/update_bad_user_agents_map.timer
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Enable timer
+  ansible.builtin.systemd_service:
+    name: update_bad_user_agents_map.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+  become: true
+
 - name: Update Nginx Config
   ansible.builtin.template:
     src: nginx/nginx.conf.j2
@@ -28,13 +78,6 @@
   notify: Reload Nginx
   become: true
 
-- name: Enable nginx
-  ansible.builtin.systemd_service:
-    name: nginx
-    enabled: true
-    state: started
-  become: true
-
 - name: Add Global fallback
   ansible.builtin.template:
     src: nginx/sites/global.conf.j2
@@ -43,6 +86,13 @@
     group: root
     mode: "0644"
   notify: Reload Nginx
+  become: true
+
+- name: Enable nginx
+  ansible.builtin.systemd_service:
+    name: nginx
+    enabled: true
+    state: started
   become: true
 
 - name: Allow http/https traffic

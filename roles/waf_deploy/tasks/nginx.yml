@@ -28,31 +28,21 @@
   notify: Reload Nginx
   become: true
 
-- name: Deploy plug
-  ansible.builtin.copy:
-    src: index.html
-    dest: /var/www/html/index.html
-    owner: root
-    group: root
-    mode: "0644"
-  become: true
-
-- name: Update sites Nginx
-  ansible.builtin.template:
-    src: "{{ item }}"
-    dest: "/etc/nginx/conf.d/{{ item | basename | regex_replace('\\.j2$', '') }}"
-    owner: root
-    group: root
-    mode: "0644"
-  notify: Reload Nginx
-  with_fileglob: "{{ role_path }}/templates/nginx/sites/*.conf.j2"
-  become: true
-
 - name: Enable nginx
   ansible.builtin.systemd_service:
     name: nginx
     enabled: true
     state: started
+  become: true
+
+- name: Add Global fallback
+  ansible.builtin.template:
+    src: nginx/sites/global.conf.j2
+    dest: /etc/nginx/conf.d/global.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload Nginx
   become: true
 
 - name: Allow http/https traffic

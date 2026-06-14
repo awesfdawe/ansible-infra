@@ -3,3 +3,6 @@
 
 - name: Nginx
   ansible.builtin.include_tasks: nginx.yml
+
+- name: Deploy plug
+  ansible.builtin.include_tasks: plug.yml

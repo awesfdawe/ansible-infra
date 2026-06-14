@@ -1,0 +1,19 @@
+---
+- name: Copy plug
+  ansible.builtin.copy:
+    src: index.html
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Update Nginx config
+  ansible.builtin.template:
+    src: nginx/sites/plug.conf.j2
+    dest: /etc/nginx/conf.d/plug.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload Nginx
+  become: true

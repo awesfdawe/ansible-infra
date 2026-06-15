@@ -40,6 +40,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "ansible-core" },
+    { name = "mitogen" },
 ]
 
 [package.dev-dependencies]
@@ -49,7 +50,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "ansible-core", specifier = ">=2.21.0" }]
+requires-dist = [
+    { name = "ansible-core", specifier = ">=2.21.0" },
+    { name = "mitogen", specifier = ">=0.3.49" },
+]
 
 [package.metadata.requires-dev]
 dev = [
@@ -349,6 +353,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729, upload-time = "2022-08-14T12:40:10.846Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
+]
+
+[[package]]
+name = "mitogen"
+version = "0.3.49"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/81/9d/cef9877c316fa5fbf0b43e4e37b67906ddad86289aa7e7e0b40fca52307e/mitogen-0.3.49.tar.gz", hash = "sha256:3ef56ba1a2a78eeed35958f64b205fe01d598b2974354a4480ff620628804d52", size = 241314, upload-time = "2026-06-03T22:49:48.046Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e4/f8/2b616723c7c388952e544f6d10d30720703723693f257ce11b5f6210236d/mitogen-0.3.49-py2.py3-none-any.whl", hash = "sha256:897ba7fc324a3f39d3787de7a9bcd93d055a43dad22a19c78c09b911c8fe2aa7", size = 291895, upload-time = "2026-06-03T22:49:46.576Z" },
 ]
 
 [[package]]

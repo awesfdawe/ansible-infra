@@ -24,6 +24,10 @@ http {
     ssl_ecdh_curve X25519MLKEM768:X25519:prime256v1:secp384r1;
     ssl_prefer_server_ciphers off;
 
+    client_body_buffer_size     256k;
+    client_header_buffer_size   4k;
+    large_client_header_buffers 4 16k;
+
     map_hash_max_size 4096;
     map_hash_bucket_size 256;
 

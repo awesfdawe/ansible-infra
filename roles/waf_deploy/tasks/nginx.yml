@@ -68,21 +68,25 @@
 
 - name: Install appsec crowdsec collections
   ansible.builtin.command:
-    cmd: >
-      cscli collections install
-      crowdsecurity/appsec-virtual-patching
-      crowdsecurity/appsec-generic-rules
-    creates: "/etc/crowdsec/collections/appsec-generic-rules.yaml"
+    cmd: "cscli collections install {{ item }}"
+    creates: "/etc/crowdsec/collections/{{ item | basename }}.yaml"
+  loop:
+    - crowdsecurity/appsec-virtual-patching
+    - crowdsecurity/appsec-generic-rules
+    - crowdsecurity/nginx
   notify: Reload Crowdsec
   become: true
 
-- name: Setup crowdsec appsec acquis
+- name: Setup few crowdsec acquis # replace with fileglob or something
   ansible.builtin.copy:
-    src: crowdsec/appsec.yaml
-    dest: /etc/crowdsec/acquis.d/appsec.yaml
+    src: crowdsec/{{ item }}.yaml
+    dest: /etc/crowdsec/acquis.d/{{ item }}.yaml
     owner: root
     group: root
     mode: "0644"
+  loop:
+    - appsec
+    - nginx
   notify: Restart Crowdsec
   become: true
 
@@ -96,6 +100,7 @@
     owner: root
     group: root
     mode: "0644"
+    create: false
   loop:
     - { key: APPSEC_URL, value: http://127.0.0.1:7422 }
     - { key: APPSEC_FAILURE_ACTION, value: deny }

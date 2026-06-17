@@ -1,5 +1,5 @@
 ---
-- name: Install essential packages
+- name: Install essential system administration utility packages
   ansible.builtin.apt:
     pkg:
       - btop

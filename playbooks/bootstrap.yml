@@ -3,7 +3,7 @@
   hosts: all
 
   tasks:
-    - name: Checking if the server is running Debian 12/13
+    - name: Verify that the host is running a supported Debian version (12 or 13)
       ansible.builtin.fail:
         msg: >
           {{ ansible_facts["distribution"] }} is not supported by these playbooks.
@@ -12,11 +12,11 @@
         ansible_facts["distribution"] != "Debian" or
         ansible_facts["distribution_major_version"] not in ["12", "13"]
 
-    - name: Main bootstrap role
+    - name: Include common system bootstrap role
       ansible.builtin.include_role:
         name: common
 
-    - name: DevSec os hardening
+    - name: Apply DevSec OS security hardening role
       ansible.builtin.include_role:
         name: devsec.hardening.os_hardening
         apply:
@@ -29,7 +29,7 @@
         os_auth_pw_max_age: 99999
         os_auth_pw_min_age: 0
 
-    - name: DevSec ssh hardening
+    - name: Apply DevSec SSH security hardening role
       ansible.builtin.include_role:
         name: devsec.hardening.ssh_hardening
         apply:

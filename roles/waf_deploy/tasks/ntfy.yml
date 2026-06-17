@@ -1,5 +1,5 @@
 ---
-- name: Copy ntfy Config
+- name: Deploy ntfy server configuration file
   ansible.builtin.template:
     src: ntfy-server.yml.j2
     dest: /etc/ntfy/server.yml
@@ -8,7 +8,7 @@
     mode: "0644"
   become: true
 
-- name: Create needed folders for ntfy
+- name: Ensure required cache and state directories exist for ntfy
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -20,14 +20,14 @@
     - /var/lib/ntfy
   become: true
 
-- name: Enable ntfy
+- name: Enable and start ntfy messaging service
   ansible.builtin.systemd_service:
     name: ntfy
     enabled: true
     state: started
   become: true
 
-- name: Add ntfy config to nginx
+- name: Deploy Nginx virtual host configuration for ntfy
   ansible.builtin.template:
     src: nginx/sites/ntfy.conf.j2
     dest: /etc/nginx/conf.d/ntfy.conf

@@ -1,18 +1,18 @@
 ---
-- name: Setup firewalld
+- name: Include Firewalld installation and configuration tasks
   ansible.builtin.include_tasks: firewalld.yml
 
-- name: Setup crowdsec
+- name: Include CrowdSec security engine installation tasks
   ansible.builtin.include_tasks: crowdsec.yml
 
-- name: Setup autoupdate
+- name: Include automatic software updates setup tasks
   ansible.builtin.include_tasks: autoupdate.yml
 
-- name: Install essential packages
+- name: Include essential utility packages installation tasks
   ansible.builtin.include_tasks: essential_packages.yml
 
-- name: Install ntfy
+- name: Include ntfy client repository and installation tasks
   ansible.builtin.include_tasks: ntfy.yml
 
-- name: Setup micro
+- name: Include Micro text editor installation and configuration tasks
   ansible.builtin.include_tasks: micro.yml

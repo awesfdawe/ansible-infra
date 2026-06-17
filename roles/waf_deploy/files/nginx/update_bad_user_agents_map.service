@@ -1,5 +1,5 @@
 [Unit]
-Description=Update bad_user_agents.map nginx file
+Description=Update bad_user_agents.map nginx file. Managed by Ansible
 After=network-online.target
 Wants=network-online.target
 

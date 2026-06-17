@@ -1,5 +1,5 @@
 ---
-- name: Install unattended-upgrades apt-listchanges
+- name: Install unattended-upgrades and apt-listchanges packages
   ansible.builtin.apt:
     pkg:
       - unattended-upgrades
@@ -8,7 +8,7 @@
     cache_valid_time: 3600
   become: true
 
-- name: Enable and start autoupdate service
+- name: Enable and start unattended-upgrades automatic update service
   ansible.builtin.systemd_service:
     name: unattended-upgrades
     enabled: true

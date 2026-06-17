@@ -1,5 +1,5 @@
 [Unit]
-Description=Timer to update bad_user_agents.map nginx file
+Description=Timer to update bad_user_agents.map nginx file. Managed by Ansible
 
 [Timer]
 OnCalendar=Mon *-*-* 05:00:00

@@ -1,11 +1,11 @@
-- name: Install micro
+- name: Install Micro text editor package
   ansible.builtin.apt:
     name: micro
     update_cache: true
     cache_valid_time: 3600
   become: true
 
-- name: Create micro settings directory
+- name: Ensure configuration directory for Micro editor exists
   ansible.builtin.file:
     path: "{{ ansible_facts['user_dir'] }}/.config/micro"
     state: directory
@@ -13,7 +13,7 @@
     group: "{{ ansible_facts['user_id'] }}"
     mode: "0755"
 
-- name: Enable terminal clipboard
+- name: Configure terminal clipboard support in Micro settings
   ansible.builtin.copy:
     dest: "{{ ansible_facts['user_dir'] }}/.config/micro/settings.json"
     owner: "{{ ansible_facts['user_id'] }}"

@@ -1,5 +1,5 @@
 ---
-- name: Install nginx
+- name: Install Nginx package and Lua module
   ansible.builtin.apt:
     pkg:
       - nginx
@@ -8,7 +8,7 @@
     cache_valid_time: 3600
   become: true
 
-- name: Create maps folder
+- name: Create maps directory for Nginx
   ansible.builtin.file:
     path: /etc/nginx/maps
     state: directory
@@ -17,12 +17,12 @@
     mode: "0755"
   become: true
 
-- name: Check if user agents map exist
+- name: Check if bad user agents map file exists
   ansible.builtin.stat:
     path: /etc/nginx/maps/bad_user_agents.map
   register: waf_deploy_bad_user_agents_file
 
-- name: Update user agents map
+- name: Download initial bad user agents map file
   ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/awesfdawe/nginx-misc/refs/heads/main/bad_user_agents.map
     dest: /etc/nginx/maps/bad_user_agents.map
@@ -32,7 +32,7 @@
   when: not waf_deploy_bad_user_agents_file.stat.exists
   become: true
 
-- name: Install service for user agents map update
+- name: Deploy Systemd service for automatic bad user agents map updates
   ansible.builtin.copy:
     src: nginx/update_bad_user_agents_map.service
     dest: /etc/systemd/system/update_bad_user_agents_map.service
@@ -41,7 +41,7 @@
     mode: "0644"
   become: true
 
-- name: Install timer for user agents map auto update
+- name: Deploy Systemd timer for bad user agents map updates
   ansible.builtin.copy:
     src: nginx/update_bad_user_agents_map.timer
     dest: /etc/systemd/system/update_bad_user_agents_map.timer
@@ -50,7 +50,7 @@
     mode: "0644"
   become: true
 
-- name: Enable timer
+- name: Enable and start Systemd timer for bad user agents map updates
   ansible.builtin.systemd_service:
     name: update_bad_user_agents_map.timer
     enabled: true
@@ -58,7 +58,7 @@
     daemon_reload: true
   become: true
 
-- name: Install crowdsec nginx bouncer
+- name: Install CrowdSec Nginx bouncer package
   ansible.builtin.apt:
     name: crowdsec-nginx-bouncer
     update_cache: true
@@ -66,7 +66,7 @@
   notify: Restart Nginx
   become: true
 
-- name: Install appsec crowdsec collections
+- name: Install CrowdSec AppSec security collections
   ansible.builtin.command:
     cmd: "cscli collections install {{ item }}"
     creates: "/etc/crowdsec/collections/{{ item | basename }}.yaml"
@@ -77,7 +77,7 @@
   notify: Reload Crowdsec
   become: true
 
-- name: Setup few crowdsec acquis # replace with fileglob or something
+- name: Configure CrowdSec acquisition sources
   ansible.builtin.copy:
     src: crowdsec/{{ item }}.yaml
     dest: /etc/crowdsec/acquis.d/{{ item }}.yaml
@@ -90,7 +90,7 @@
   notify: Restart Crowdsec
   become: true
 
-- name: Set right appsec settings
+- name: Configure CrowdSec Nginx bouncer AppSec settings
   community.general.ini_file:
     path: /etc/crowdsec/bouncers/crowdsec-nginx-bouncer.conf
     section: null
@@ -107,7 +107,7 @@
   notify: Restart Nginx
   become: true
 
-- name: Update Nginx Config
+- name: Deploy Nginx main configuration file
   ansible.builtin.template:
     src: nginx/nginx.conf.j2
     dest: /etc/nginx/nginx.conf
@@ -117,7 +117,7 @@
   notify: Reload Nginx
   become: true
 
-- name: Update main Nginx snippet
+- name: Deploy Nginx proxy settings configuration snippet
   ansible.builtin.template:
     src: nginx/proxy-snippet.conf.j2
     dest: /etc/nginx/snippets/proxy.conf
@@ -127,7 +127,7 @@
   notify: Reload Nginx
   become: true
 
-- name: Update headers Nginx snippet
+- name: Deploy Nginx security headers configuration snippet
   ansible.builtin.copy:
     src: nginx/headers-snippet.conf
     dest: /etc/nginx/snippets/headers.conf
@@ -137,7 +137,7 @@
   notify: Reload Nginx
   become: true
 
-- name: Add Global fallback
+- name: Deploy Nginx global fallback server configuration
   ansible.builtin.template:
     src: nginx/sites/global.conf.j2
     dest: /etc/nginx/conf.d/global.conf
@@ -147,14 +147,14 @@
   notify: Reload Nginx
   become: true
 
-- name: Enable nginx
+- name: Enable and start Nginx service
   ansible.builtin.systemd_service:
     name: nginx
     enabled: true
     state: started
   become: true
 
-- name: Allow http/https traffic
+- name: Allow HTTP and HTTPS traffic through Firewalld
   ansible.posix.firewalld:
     service: "{{ item }}"
     permanent: true
@@ -165,4 +165,5 @@
     - https
   become: true
 
-# fix notify race
+- name: Flush handlers to apply configuration changes immediately
+  ansible.builtin.meta: flush_handlers

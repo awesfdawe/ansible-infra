@@ -1,4 +1,4 @@
-- name: Add ntfy repository
+- name: Configure ntfy package repository
   ansible.builtin.deb822_repository:
     name: ntfy
     types: deb
@@ -8,7 +8,7 @@
     signed_by: https://archive.ntfy.sh/apt/keyring.gpg
   become: true
 
-- name: Install ntfy
+- name: Install ntfy application package
   ansible.builtin.apt:
     name: ntfy
     update_cache: true

@@ -3,7 +3,7 @@
   hosts: waf
 
   tasks:
-    - name: Checking if the server is running Debian 13
+    - name: Verify that the host is running Debian 13
       ansible.builtin.fail:
         msg: >
           {{ ansible_facts["distribution"] }} is not supported by these playbook.
@@ -12,6 +12,6 @@
         ansible_facts["distribution"] != "Debian" or
         ansible_facts["distribution_major_version"] != "13"
 
-    - name: Main role
+    - name: Include Web Application Firewall deployment role
       ansible.builtin.include_role:
         name: waf_deploy

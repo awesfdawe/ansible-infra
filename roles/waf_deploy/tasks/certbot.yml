@@ -1,4 +1,4 @@
-- name: Install certbot
+- name: Install Certbot and Cloudflare DNS plugin packages
   ansible.builtin.apt:
     pkg:
       - certbot
@@ -7,7 +7,7 @@
     cache_valid_time: 3600
   become: true
 
-- name: Create letsencrypt directory
+- name: Ensure Let's Encrypt configuration directory exists
   ansible.builtin.file:
     path: /etc/letsencrypt
     state: directory
@@ -16,7 +16,7 @@
     mode: "0755"
   become: true
 
-- name: Create cloudflare dns provider config
+- name: Deploy Cloudflare DNS API provider configuration
   ansible.builtin.template:
     src: templates/cloudflare.ini.j2
     dest: /etc/letsencrypt/cloudflare.ini
@@ -25,7 +25,7 @@
     mode: "0600"
   become: true
 
-- name: Get wildcard certificate and set up auto-renewal
+- name: Acquire SSL wildcard certificates via Cloudflare DNS challenge
   ansible.builtin.command:
     cmd: >
       certbot certonly

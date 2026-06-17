@@ -1,11 +1,11 @@
-- name: Certbot
+- name: Include Certbot SSL certificate management tasks
   ansible.builtin.include_tasks: certbot.yml
 
-- name: Nginx
+- name: Include Nginx web server deployment and security tasks
   ansible.builtin.include_tasks: nginx.yml
 
-- name: Deploy plug
+- name: Include maintenance page deployment tasks
   ansible.builtin.include_tasks: plug.yml
 
-- name: Deploy ntfy
+- name: Include ntfy notification server deployment tasks
   ansible.builtin.include_tasks: ntfy.yml

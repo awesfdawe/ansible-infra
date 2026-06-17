@@ -13,12 +13,12 @@
 
 - name: Reload Crowdsec
   ansible.builtin.systemd_service:
-    name: nginx
+    name: crowdsec
     state: reloaded
   become: true
 
 - name: Restart Crowdsec
   ansible.builtin.systemd_service:
-    name: nginx
+    name: crowdsec
     state: restarted
   become: true

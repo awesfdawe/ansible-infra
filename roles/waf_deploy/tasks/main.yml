@@ -1,6 +1,9 @@
 - name: Include Certbot SSL certificate management tasks
   ansible.builtin.include_tasks: certbot.yml
 
+- name: Include wireguard server deployment
+  ansible.builtin.include_tasks: wireguard.yml
+
 - name: Include Nginx web server deployment and security tasks
   ansible.builtin.include_tasks: nginx.yml
 

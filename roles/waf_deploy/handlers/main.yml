@@ -22,3 +22,9 @@
     name: crowdsec
     state: restarted
   become: true
+
+- name: Restart Wireguard
+  ansible.builtin.systemd_service:
+    name: wg-quick@wg0
+    state: restarted
+  become: true

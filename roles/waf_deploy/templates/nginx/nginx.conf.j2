@@ -35,7 +35,7 @@ http {
 
     map $http_upgrade $connection_upgrade {
         default upgrade;
-        '' close;
+        '' "";
     }
 
     map $http_user_agent $is_bad_bot {

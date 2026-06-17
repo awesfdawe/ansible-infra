@@ -1,0 +1,9 @@
+[Interface]
+PrivateKey = {{ client_wg_private_key }}
+Address = 10.0.0.2/24
+
+[Peer]
+PublicKey = {{ server_wg_public_key }}
+Endpoint = {{ domain }}:51820
+AllowedIPs = 10.0.0.1/32
+PersistentKeepalive = 25

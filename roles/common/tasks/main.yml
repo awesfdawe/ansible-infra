@@ -11,5 +11,8 @@
 - name: Install essential packages
   ansible.builtin.include_tasks: essential_packages.yml
 
+- name: Install ntfy
+  ansible.builtin.include_tasks: ntfy.yml
+
 - name: Setup micro
   ansible.builtin.include_tasks: micro.yml

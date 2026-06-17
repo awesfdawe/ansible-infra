@@ -6,3 +6,6 @@
 
 - name: Deploy plug
   ansible.builtin.include_tasks: plug.yml
+
+- name: Deploy ntfy
+  ansible.builtin.include_tasks: ntfy.yml

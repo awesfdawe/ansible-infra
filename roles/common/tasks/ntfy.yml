@@ -1,0 +1,16 @@
+- name: Add ntfy repository
+  ansible.builtin.deb822_repository:
+    name: ntfy
+    types: deb
+    uris: https://archive.ntfy.sh/apt
+    suites: stable
+    components: main
+    signed_by: https://archive.ntfy.sh/apt/keyring.gpg
+  become: true
+
+- name: Install ntfy
+  ansible.builtin.apt:
+    name: ntfy
+    update_cache: true
+    cache_valid_time: 3600
+  become: true

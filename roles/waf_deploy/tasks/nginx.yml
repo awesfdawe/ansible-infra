@@ -127,6 +127,16 @@
   notify: Reload Nginx
   become: true
 
+- name: Update headers Nginx snippet
+  ansible.builtin.copy:
+    src: nginx/headers-snippet.conf
+    dest: /etc/nginx/snippets/headers.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload Nginx
+  become: true
+
 - name: Add Global fallback
   ansible.builtin.template:
     src: nginx/sites/global.conf.j2
@@ -154,3 +164,5 @@
     - http
     - https
   become: true
+
+# fix notify race

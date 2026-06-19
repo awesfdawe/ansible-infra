@@ -1,0 +1,58 @@
+---
+- name: Setup Amnezia Wireguard interface
+  become: true
+  block:
+    - name: Configure Amnezia WireGuard package repository
+      ansible.builtin.deb822_repository:
+        name: amnezia
+        types: deb
+        uris: https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu
+        suites: focal
+        components: main
+        signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x57290828
+      notify: Update apt cache
+
+    - name: Flush handlers now
+      ansible.builtin.meta: flush_handlers
+
+    - name: Install amnezia
+      ansible.builtin.apt:
+        pkg:
+          - amneziawg
+          - amneziawg-tools
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install server awg config
+      ansible.builtin.template:
+        src: "{{ awg_template }}"
+        dest: "/etc/amnezia/amneziawg/{{ awg_interface }}.conf"
+        owner: root
+        group: root
+        mode: "0600"
+      notify: Restart Amnezia
+
+    - name: Enable and start awg service
+      ansible.builtin.systemd_service:
+        name: "awg-quick@{{ awg_interface }}"
+        enabled: true
+        state: started
+
+    - name: Allow amnezia traffic through Firewalld
+      when: awg_port != "none"
+      block:
+        - name: Allow amnezia traffic through Firewalld (service)
+          ansible.posix.firewalld:
+            service: "{{ awg_port }}"
+            permanent: true
+            state: enabled
+            immediate: true
+          when: awg_port is not match('^[0-9]+$')
+
+        - name: Allow amnezia traffic through Firewalld (port)
+          ansible.posix.firewalld:
+            port: "{{ awg_port }}/udp"
+            permanent: true
+            state: enabled
+            immediate: true
+          when: awg_port is match('^[0-9]+$')

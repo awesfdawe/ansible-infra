@@ -1,5 +1,5 @@
 ---
-- name: Install essential system administration utility packages
+- name: Install essential packages
   ansible.builtin.apt:
     pkg:
       - btop
@@ -15,6 +15,7 @@
       - zip
       - unzip
       - p7zip-full
+      - "linux-headers-{{ ansible_facts['pkg_mgr_architecture'] }}"
     update_cache: true
     cache_valid_time: 3600
   become: true

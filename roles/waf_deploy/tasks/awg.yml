@@ -1,0 +1,48 @@
+---
+- name: Configure Amnezia WireGuard package repository
+  ansible.builtin.deb822_repository:
+    name: amnezia
+    types: deb
+    uris: https://ppa.launchpadcontent.net/amnezia/ppa/ubuntu
+    suites: focal
+    components: main
+    signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x57290828
+  notify: Update apt cache
+  become: true
+
+- name: Flush handlers now
+  ansible.builtin.meta: flush_handlers
+
+- name: Install amnezia
+  ansible.builtin.apt:
+    pkg:
+      - amneziawg
+      - amneziawg-tools
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: Install server awg config
+  ansible.builtin.template:
+    src: templates/awg-server.conf.j2
+    dest: /etc/amnezia/amneziawg/wg0.conf
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart Amnezia
+  become: true
+
+- name: Enable and start awg service
+  ansible.builtin.systemd_service:
+    name: awg-quick@wg0
+    enabled: true
+    state: started
+  become: true
+
+- name: Allow amnezia traffic through Firewalld
+  ansible.posix.firewalld:
+    service: stun
+    permanent: true
+    state: enabled
+    immediate: true
+  become: true

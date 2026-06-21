@@ -1,0 +1,5 @@
+- name: Restart Amnezia
+  ansible.builtin.systemd_service:
+    name: "awg-quick@{{ awg_interface }}"
+    state: restarted
+  become: true

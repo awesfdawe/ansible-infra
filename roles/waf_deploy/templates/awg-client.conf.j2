@@ -1,0 +1,14 @@
+[Interface]
+PrivateKey = {{ client_wg_private_key }}
+Address = 10.0.0.2/24
+MTU = 1280
+
+{% for key, value in amnezia_obfuscation.items() %}
+{{ key }} = {{ value }}
+{% endfor %}
+
+[Peer]
+PublicKey = {{ server_wg_public_key }}
+Endpoint = {{ domain }}:3478
+AllowedIPs = 10.0.0.1/32
+PersistentKeepalive = 25

@@ -15,7 +15,7 @@
       - zip
       - unzip
       - p7zip-full
-      - "linux-headers-{{ ansible_facts['pkg_mgr_architecture'] }}"
+      - "linux-headers-{{ {'x86_64': 'amd64', 'aarch64': 'arm64', 'armv7l': 'armhf', 'i686': 'i386'}.get(ansible_architecture, ansible_architecture) }}"
     update_cache: true
     cache_valid_time: 3600
   become: true

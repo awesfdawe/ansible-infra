@@ -1,0 +1,13 @@
+[Interface]
+PrivateKey = {{ server_wg_private_key }}
+ListenPort = 3478
+Address = 10.0.0.1/24
+MTU = 1280
+
+{% for key, value in amnezia_obfuscation.items() %}
+{{ key }} = {{ value }}
+{% endfor %}
+
+[Peer]
+PublicKey = {{ client_wg_public_key }}
+AllowedIPs = 10.0.0.2/32

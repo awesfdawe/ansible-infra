@@ -1,0 +1,6 @@
+---
+- name: Include amnezia wireguard server deployment
+  ansible.builtin.include_role:
+    name: awg
+  vars:
+    awg_template: awg-client.conf.j2

@@ -1,3 +1,4 @@
+---
 - name: Include amnezia wireguard server deployment
   ansible.builtin.include_role:
     name: awg

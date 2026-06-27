@@ -1,4 +1,4 @@
-Role for setting up Amnezia WireGuard. 
+Role for setting up Amnezia WireGuard.
 
 **Role Variables:**
 

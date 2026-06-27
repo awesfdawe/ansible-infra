@@ -1,4 +1,25 @@
 ---
+- name: Configure ntfy package repository
+  ansible.builtin.deb822_repository:
+    name: ntfy
+    types: deb
+    uris: https://archive.ntfy.sh/apt
+    suites: stable
+    components: main
+    signed_by: https://archive.ntfy.sh/apt/keyring.gpg
+  notify: Update apt cache
+  become: true
+
+- name: Flush handlers now
+  ansible.builtin.meta: flush_handlers
+
+- name: Install ntfy application package
+  ansible.builtin.apt:
+    name: ntfy
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
 - name: Deploy ntfy server configuration file
   ansible.builtin.template:
     src: ntfy-server.yml.j2
